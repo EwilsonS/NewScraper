@@ -4,7 +4,7 @@ $(document).ready(function () {
   $(document).on("click", ".btn.delete", handleArticleDelete);
   $(document).on("click", ".btn.notes", handleArticleNotes);
   $(document).on("click", ".btn.save", handleNoteSave);
-  $(document).on("click", ".btn.note-save", handleNoteDelete);
+  $(document).on("click", ".btn.note-delete", handleNoteDelete);
 
   initPage();
 
@@ -35,16 +35,19 @@ $(document).ready(function () {
       $(["<div class='card mb-2'>",
         "<div class='card-header p-1'>",
         "<h6>",
-        "<a href=' " + article.url+ "'>",
+        "<a class='text-dark' href=' " + article.url + "'>",
         article.headline,
-        "<a class='btn btn-sm p-0 float-right btn-outline-danger delete'>",
+        "<a class='btn btn-sm mr-1 p-0 float-right text-light btn-danger delete'>",
         "Delete",
+        "</a>",
+        "<a class='btn btn-sm mr-1 p-0 float-right text-light btn-info notes'>",
+        "Notes",
         "</a>",
         "</h6>",
         "</div>",
         "<div class='card-body p-1'>",
-        "<p class='summary'>",
-        "<img class='float-left mr-1' src='"+article.image+ "' width='150px'>",
+        "<p class='mb-1 summary'>",
+        "<img class='float-left mr-1' src='" + article.image + "' width='150px'>",
         article.summary,
         "</p>",
         "</div>",
@@ -61,11 +64,9 @@ $(document).ready(function () {
         "<h4>No Saved Articles</h4>",
         "<div class='card>",
         "<div class='card-header text-center'>",
-        "<h5>What would you like to do?</h5>",
         "</div>",
         "<div class card-body text-center>",
-        "<h6><a href='/' class='scrape-new'>Fresh Scrape</a></h6>",
-        "<h6><a href='/saved'>View Saved</a></h6>",
+        "<h6><a href='/' class='scrape-new'>Home</a></h6>",
         "</div>",
         "</div>",
         "</div>"
@@ -74,11 +75,12 @@ $(document).ready(function () {
   }
 
   function renderNotesList(data) {
+    console.log(data)
     var notesToRender = [];
     var currentNote;
     if (!data.notes.length) {
       currentNote = [
-        "<li class='list-group-item'>",
+        "<li class='list-group-item mb-3'>",
         "No notes yet, be the first!",
         "</li>"
       ].join("");
@@ -87,15 +89,17 @@ $(document).ready(function () {
     else {
       for (var i = 0; i < data.notes.length; i++) {
         currentNote = $([
-          "<li class='list-group-item note'>",
+          "<li class='list-group-item note mb-3'>",
           data.notes[i].noteText,
-          "<button class = btn btn-sm btn-danger note-delete'>x</button>",
+          "<button class='btn btn-sm btn-danger rounded-0 float-right note-delete'>x</button>",
           "</li>"
         ].join(""));
         currentNote.children("button").data("_id", data.notes[i]._id);
         notesToRender.push(currentNote);
       }
     }
+
+    $(".note-container").append(notesToRender)
   }
 
   function handleArticleDelete() {
@@ -113,46 +117,45 @@ $(document).ready(function () {
 
   function handleArticleNotes() {
     var currentArticle = $(this).parents(".card").data();
-    $.get("/api/notes/" + currentArticle._id)
-      .then(function (data) {
-        var modalText = [
-          "<div class='container-fluid text-center'>",
-          "<h4>Notes For Article: ",
-          currentArticle._id,
-          "</h4>",
-          "<hr />",
-          "<ul class='list-group note-container'>",
-          "</ul>",
-          "<textarea placeholder='New Note' rows='4' cols='60'></textarea>",
-          "<buttons class='btn btn-success save'>Save Note</button>",
-          "</div>"
-        ].join("");
+    $.get("/api/notes/" + currentArticle._id).then(function (data) {
+      var modalText = [
+        "<div class='container-fluid bg-light text-center'>",
+        "<h6>Notes For Article: ",
+        currentArticle._id,
+        "</h6>",
+        "<hr />",
+        "<ul class='list-group note-container'>",
+        "</ul>",
+        "<textarea placeholder='New Note' rows='4' cols='60'></textarea>",
+        "<button class='btn btn-sm btn-outline-info save'>Save Note</button>",
+        "</div>"
+      ].join("");
 
-        bootbox.dialog({
-          message: modalText,
-          closeButton: true
-        });
-        var noteData = {
-          _id: currentArticle._id,
-          notes: data || []
-        };
+      bootbox.dialog({
+        message: modalText,
+        closeButton: true
+      });
+      var noteData = {
+        _id: currentArticle._id,
+        notes: data || []
+      };
 
-        $(".btn.save").data("article", noteData);
+      $(".btn.save").data("article", noteData);
 
-        renderNotesList(noteData)
-      })
+      renderNotesList(noteData)
+    })
   }
 
-  function handleNoteSave() {
+  function handleNoteSave (){
     var noteData;
     var newNote = $(".bootbox-body textarea").val().trim();
 
     if (newNote) {
       noteData = {
-        _id: $(this).data("article"._id),
+        _id: $(this).data("article")._id,
         noteText: newNote
       };
-      $.post("api/notes", noteData)
+      $.post("/api/notes", noteData)
         .then(function () {
           bootbox.hideAll();
         })

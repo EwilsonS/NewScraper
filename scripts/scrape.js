@@ -27,7 +27,7 @@ const scrape = function (cb) {
         results.push(dataToAdd)
       }
     });
-    cb=results
+    cb(results)
   });
 }
 
