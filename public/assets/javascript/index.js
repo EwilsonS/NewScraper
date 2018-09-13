@@ -35,7 +35,7 @@ $(document).ready(function () {
         "<h6>",
         "<a class='text-dark' href=' " + article.url+ "'>",
         article.headline,
-        "<a class='btn btn-sm p-0 float-right text-light btn-info save'>",
+        "<a class='btn btn-sm py-0 px-1 float-right btn-warning save'>",
         "Save",
         "</a>",
         "</h6>",

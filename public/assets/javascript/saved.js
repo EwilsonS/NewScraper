@@ -37,10 +37,10 @@ $(document).ready(function () {
         "<h6>",
         "<a class='text-dark' href=' " + article.url + "'>",
         article.headline,
-        "<a class='btn btn-sm mr-1 p-0 float-right text-light btn-danger delete'>",
+        "<a class='btn btn-sm mr-1 px-1 py-0 float-right text-light btn-danger delete'>",
         "Delete",
         "</a>",
-        "<a class='btn btn-sm mr-1 p-0 float-right text-light btn-info notes'>",
+        "<a class='btn btn-sm mr-1 px-1 py-0 float-right text-dark btn-warning notes'>",
         "Notes",
         "</a>",
         "</h6>",
@@ -119,7 +119,7 @@ $(document).ready(function () {
     var currentArticle = $(this).parents(".card").data();
     $.get("/api/notes/" + currentArticle._id).then(function (data) {
       var modalText = [
-        "<div class='container-fluid bg-light text-center'>",
+        "<div class='container-fluid mod m-0 p-0 text-center'>",
         "<h6>Notes For Article: ",
         currentArticle._id,
         "</h6>",
@@ -127,7 +127,7 @@ $(document).ready(function () {
         "<ul class='list-group note-container'>",
         "</ul>",
         "<textarea placeholder='New Note' rows='4' cols='60'></textarea>",
-        "<button class='btn btn-sm btn-outline-info save'>Save Note</button>",
+        "<button class='btn btn-sm btn-warning save'>Save Note</button>",
         "</div>"
       ].join("");
 
@@ -161,14 +161,14 @@ $(document).ready(function () {
         })
     }
   }
-  function handleNoteDelete() {
+  function handleNoteDelete () {
     var noteToDelete = $(this).data("_id");
 
     $.ajax({
       url: "/api/notes/" + noteToDelete,
       method: "DELETE"
     })
-      .then(function () {
+      .then(function() {
         bootbox.hideAll()
       });
   }
