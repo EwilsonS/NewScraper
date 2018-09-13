@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
-// const logger = require("morgan");
+const logger = require("morgan");
 const mongoose = require("mongoose");
 
 const PORT = process.env.PORT ? process.env.PORT : 1987;
@@ -10,7 +10,7 @@ const app = express();
 
 let router = express.Router();
 
-// app.use(logger("dev"));
+app.use(logger("dev"));
 
 require("./config/routes")(router);
 

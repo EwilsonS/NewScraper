@@ -25,7 +25,7 @@ module.exports = {
   },
   delete: function (data, cb) {
     Note.remove({
-      _pid: data._id
+      _id: data._id
     }, cb);
   }
 }
